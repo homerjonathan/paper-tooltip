@@ -243,6 +243,43 @@ Custom property | Description | Default
           this._removeListeners();
       },
 
+      playAnimation2: function(name) {
+          var _this = this;
+        if (name === 'entry') {
+            var animate = this.$.tooltip.animate(
+            {
+                duration: 1500,
+                web: {
+                    opacity: [0, 1]
+                }
+            });
+            animate.effect.timing.delay = 500;
+            animate.play();
+            animate.onfinish = function() {
+                // Preserve end position of the animation
+                _this.$.tooltip.style.opacity = 1;
+                _this._onAnimationFinish();
+              };
+        } else if ( name === 'exit' ) {
+            var animate = this.$.tooltip.animate(
+                {
+                    duration: 1500,
+                    web: {
+                        opacity: [1, 0]
+                    }
+                });
+            animate.effect.timing.delay = 0;
+            animate.play();
+
+            animate.onfinish = function() {
+                // Preserve end position of the animation
+                _this.$.tooltip.style.opacity = 0;
+                _this._onAnimationFinish();
+            };
+        }
+      },
+
+
       show: function() {
         // If the tooltip is already showing, there's nothing to do.
         if (this._showing)
@@ -272,7 +309,7 @@ Custom property | Description | Default
         this.animationConfig['entry'][0].timing = this.animationConfig['entry'][0].timing || {};
         this.animationConfig['entry'][0].timing.delay = this.animationDelay;
         this._animationPlaying = true;
-        this.playAnimation('entry');
+        this.playAnimation2('entry');
       },
 
       hide: function() {
@@ -292,7 +329,7 @@ Custom property | Description | Default
 
         this._showing = false;
         this._animationPlaying = true;
-        this.playAnimation('exit');
+        this.playAnimation2('exit');
       },
 
       updatePosition: function() {
